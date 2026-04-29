@@ -95,8 +95,11 @@ class YeelightBT(LightEntity):
                 EVENT_HOMEASSISTANT_STOP, self.async_will_remove_from_hass
             )
         )
-        # schedule immediate refresh of lamp state:
-        self.async_schedule_update_ha_state(force_refresh=True)
+        # Initial connection is run as a background task so that the first
+        # connect (which can sleep up to 10 s on Candela while waiting for
+        # BLE pairing) does not block the HA update cycle and trigger the
+        # "Update is taking over 10 seconds" warning.
+        self.hass.async_create_task(self._dev.get_state())
 
     async def async_will_remove_from_hass(self, event=None) -> None:
         """Run when entity will be removed from hass."""
@@ -202,9 +205,11 @@ class YeelightBT(LightEntity):
     @property
     def color_mode(self) -> str:
         """Return the current color mode of the light."""
+        if self._dev.model == MODEL_CANDELA:
+            return ColorMode.BRIGHTNESS
         if self._ct > 0:
             return ColorMode.COLOR_TEMP
-        return ColorMode.HS        
+        return ColorMode.HS
 
     def _status_cb(self) -> None:
         _LOGGER.debug("Got state notification from the lamp")
