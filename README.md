@@ -1,13 +1,3 @@
-> **Warning**
-> The bluetooth landscape in HA is currently evolving and at the moment there still seem to be some issues with Candela.
-> Current status:
->
-> - For HA prior to 2022.7.0 => use release v0.11.3
-> - For HA 2022.7.0 => use release v1.0.1 (Candela does not seem to work)
-> - For HA 2022.8.0+ => v1.1.0+ is compatible with and without the bluetooth integration (Candela is still WIP)
-> - For HA 2022.9.0+ => v1.2.1+ is compatible with and without the bluetooth integration (Candela still not working)
-> - For HA 2022.10.0+ => v1.2.2+ is compatible with the bluetooth integration and with esp bluetooth proxy (Candela control may work?)
-
 # Home Assistant custom component for Yeelight Bedside lamp
 
 This is a custom component for Home Assistant that allows the control of the Yeelight bedside Lamp via bluetooth. (Contrary to the wifi version, those lamps only have bluetooth control).
@@ -26,11 +16,10 @@ This repo is now in [HACS](https://hacs.xyz/).
 2. Search for `Yeelight bluetooth`
 3. Install and enjoy automatic updates
 
-
 ## 2. Manual Installation
 
 1. Download the `hass-yeelight_bt.zip` file from the
-   [latest release](https://github.com/hcoohb/hass-yeelightbt/releases/latest).
+   [latest release](https://github.com/stast1/hass-yeelightbt/releases/latest).
 2. Unpack the release and copy the `custom_components/yeelight_bt` directory
    into the `custom_components` directory of your Home Assistant
    installation.
@@ -39,10 +28,10 @@ This repo is now in [HACS](https://hacs.xyz/).
 
 ## Ensure Host bluetooth is accessible from Home-Assistant
 
-Since version 1.0.0, this component uses the [`bleak`](https://github.com/hbldh/bleak) python library to access bluetooth (as bluepy is not supported from HA 2022.07+). In order to scan and interact with bluetooth devices, bluez utility needs to be installed and the correct permissions must be given to HA:
+This component uses the [`bleak`](https://github.com/hbldh/bleak) python library (≥ 2.1.1) to access bluetooth. In order to scan and interact with bluetooth devices, bluez needs to be installed and the correct permissions must be given to HA:
 
 - for **Home Assistant Operating System**:
-  It should be all setup, at least for HA 2022.7+
+  It should be all setup.
 
 - For **Home Assistant Container** in docker:
 
@@ -67,7 +56,7 @@ Since version 1.0.0, this component uses the [`bleak`](https://github.com/hbldh/
 
 ## Adding the device to HA
 
-You must have the `bluetooth` integration enabled and configured (HA 2022.8+) or a connected ESPhome device running the bluetooth proxy (HA 2022.10+). The Lamps should be automatically discovered and you will receive a notification prompting you to add it.
+You must have the `bluetooth` integration enabled and configured, or a connected ESPHome device running the bluetooth proxy. The Lamps should be automatically discovered and you will receive a notification prompting you to add it.
 
 The devices can also be added through the `integration menu` UI:
 
@@ -87,10 +76,9 @@ Please ensure the following steps prior to adding a new light:
 
 # A note on bleak and bluetooth in HA
 
-Starting with 2022.08, HA is trying to provide a framework centered around the bleak library so that all components can use the same interface and avoid conflicts between the different ble libraries. This is early days and there is still some active work trying to stabilise everything but this integration component has now been converted to be compatible with HA `bluetooth` integration.
+This integration uses the HA `bluetooth` integration framework and requires Home Assistant ≥ 2026.1.0. Both the Yeelight Bedside lamp and the Candela are supported.
 
-In the process, unfortunately it seems that the candela is not working at the moment.
-I only have one yeelight bedside, so if you have issues with candela or multiple lights, please report an issue (with debugging logs) so we can try to sort it out.
+If you have issues with Candela or multiple lights, please report an issue (with debugging logs) so we can try to sort it out.
 
 # Debugging
 

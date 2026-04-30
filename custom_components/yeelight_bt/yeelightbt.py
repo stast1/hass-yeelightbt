@@ -9,6 +9,7 @@ from __future__ import annotations
 import asyncio
 import enum
 import logging
+import platform
 import struct
 from typing import Any, Callable, cast
 
@@ -166,12 +167,9 @@ class Lamp:
                 max_attempts=4,
             )
             _LOGGER.debug(
-                f"Client used is: {self._client}. Backend is {self._client._backend}"
+                f"Client used is: {self._client}."
             )
-            self._is_client_bluez = (
-                str(type(self._client._backend))
-                == "<class 'bleak.backends.bluezdbus.client.BleakClientBlueZDBus'>"
-            )
+            self._is_client_bluez = platform.system() == "Linux"
             self._conn = Conn.UNPAIRED
             _LOGGER.debug(f"Connected: {self._client.is_connected}")
 
@@ -300,6 +298,7 @@ class Lamp:
                 _LOGGER.error("Send Cmd: Timeout error")
             except BleakError as err:
                 _LOGGER.error(f"Send Cmd: BleakError: {err}")
+                self._conn = Conn.DISCONNECTED
         return False
 
     async def get_state(self) -> None:
